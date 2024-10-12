@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Comment;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -60,7 +61,11 @@ class ProductController extends Controller
         // Lấy tất cả danh mục
         $categories = Category::all();
 
-        return view('client.index', compact('latestProducts', 'hotProducts', 'categories'));
+        return view('client.index', compact(
+            'latestProducts',
+            'hotProducts',
+            'categories'
+        ));
     }
 
 
@@ -110,6 +115,7 @@ class ProductController extends Controller
     {
         // Lấy sản phẩm chính
         $product = Product::with('category')->find($id);
+        $comments = Comment::where('product_id', $product->id)->get();
 
         // Lấy tất cả sản phẩm cùng category_id với sản phẩm chính, trừ sản phẩm chính
         $relatedProducts = Product::where('category_id', $product->category_id)
@@ -117,6 +123,9 @@ class ProductController extends Controller
             ->take(4)
             ->get();
 
-        return view('client.detail', compact('product', 'relatedProducts'));
+        return view('client.detail', compact('product', 'relatedProducts',
+        'comments'));
     }
+
+    
 }

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('category_name');
             $table->tinyInteger('active')->default(1);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

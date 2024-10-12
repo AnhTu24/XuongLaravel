@@ -14,13 +14,15 @@
         <section class="details section--lg">
             <div class="details__container container grid ac">
                 <div class="details__group">
-                    <img src="{{ $product->image }}" alt="" class="details__img" height="550px" id="details">
+                    <img src="{{ Storage::url($product['image']) }}" alt="" class="details__img" height="500px"
+                        id="details">
                 </div>
 
                 <div class="details__group">
                     <h3 class="details__title">{{ $product->product_name }}</h3>
-                    <p class="details__brand">Category: <a href="{{ route('client.shop', ['category' => $product->category_id]) }}">
-                        {{ $product->category->category_name }}</a></p>
+                    <p class="details__brand">Category: <a
+                            href="{{ route('client.shop', ['category' => $product->category_id]) }}">
+                            {{ $product->category->category_name }}</a></p>
 
                     <div class="details__price flex">
                         <span class="new__price">
@@ -38,22 +40,10 @@
                     </div>
 
                     <p class="short__description">
-                        {{ $product->discription }}
+                        {{ $product->description }}
                     </p>
 
-                    <ul class="product__list">
-                        <li class="list__item flex">
-                            <i class="fa-solid fa-crown"></i>1 Year AL Jazeera Brand Warranty
-                        </li>
 
-                        <li class="list__item flex">
-                            <i class="fa-solid fa-arrows-rotate"></i>30 Day Return Policy
-                        </li>
-
-                        <li class="list__item flex">
-                            <i class="fa-regular fa-credit-card"></i>Card on Delivery available
-                        </li>
-                    </ul>
 
                     <div class="details__color flex">
                         <span class="details__color-title">Color</span>
@@ -79,16 +69,7 @@
                     <div class="details__action">
                         <input type="number" name="" id="" class="quantity" value="3">
                         <a href="#" class="btn btn-sm">Add to Cart</a>
-                        <a href="#" class="details__action-btn details__action-btn--color">
-                            <i class="fa-solid fa-heart"></i>
-                        </a>
                     </div>
-
-                    <ul class="details__meta">
-                        <li class="meta__list flex"><span>SKU:</span> FWM15VKL</li>
-                        <li class="meta__list flex"><span>Tags:</span> Cloth, Men, Dress</li>
-                        <li class="meta__list flex"><span>Avaliability:</span> 8 Items In Stock</li>
-                    </ul>
                 </div>
             </div>
 
@@ -96,26 +77,72 @@
                 <div class="details__group">
                     <img src="{{ $product->image }}" alt="" class="details__img" id="details"
                         onmouseout="imgOut()" onmouseover="imgOver()">
-                    <div class="details__small-images grid">
-                        <img src="assets/img/product-8-2.jpg" alt="" class="details__small-img">
-                        <img src="assets/img/product-8-1.jpg" alt="" class="details__small-img">
-                        <img src="assets/img/product-8-2.jpg" alt="" class="details__small-img">
-                    </div>
+
                 </div>
             </div>
         </section>
 
         <section class="details__tab container">
             <div class="detail__tabs">
-                <span class="detail__tab active-tab">Additional Info</span>
-                <span class="detail__tab">Reviews(3)</span>
+                <span class="detail__tab active-tab">Comments</span>
             </div>
 
+
             <div class="details__tabs-content">
-                <div class="details__tab-content active-tab">
-               
+                <div class="details__tab-content active-tab" id="tab-content">
+                    <div class="cart__comment">
+                        @foreach ($comments as $comment)
+                            <div class="comments">
+                                <div class="comment">
+                                    <div class="avatar">
+                                        {{-- Replace with user avatar if available --}}
+                                        <img style="avatar object-fit: cover;"
+                                            src="{{ Storage::url($comment->user->image) ?? '/path/to/default/avatar.jpg' }}"
+                                            alt="Avatar">
+                                    </div>
+                                    <div class="comment-content">
+                                        <div class="comment-header">
+                                            <b class="username">{{ $comment->user->fullname }}</b>
+                                            <span class="timestamp">{{ $comment->created_at }}</span>
+                                        </div>
+                                        <p class="comment-text">{{ $comment->content }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+
+                        {{-- Show the comment form if the user is logged in --}}
+                        @if (Auth::check())
+                            <form action="{{ route('comments.store') }}" method="POST" class="comment__form form grid">
+                                @csrf
+                                <div class="form__group">
+                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                    <input class="form__input" name="content" id="comments"
+                                        placeholder="Write a comment..." required></input>
+                                    <div class="form__btn">
+                                        <button type="submit" id="btnsub" class="btn flex btn--sm">Submit
+                                        </button>
+                                    </div>
+                                </div>
+                                {{-- Error message if validation fails --}}
+                                @if ($errors->has('content'))
+                                    <span style="color:red">{{ $errors->first('content') }}</span>
+                                @endif
+                            </form>
+                        @else
+                            <div class="header__top-action">
+                                <span>You need 
+                                    <a href="{{ route('login') }}">
+                                        log in
+                                    </a>
+                                     to comment</span>
+                            </div>
+                        @endif
+                    </div>
                 </div>
             </div>
+
+
         </section>
 
         <section class="products container section--lg">
@@ -125,7 +152,7 @@
                     <div class="product__item">
                         <div class="product__banner">
                             <a href="{{ route('client.detail', $relatedProduct->id) }}" class="product__images">
-                                <img src="{{ $relatedProduct->image }}" alt="" class="product__img default">
+                                <img src="{{ Storage::url($relatedProduct['image']) }}" alt="" class="product__img default">
                             </a>
                             @if ($relatedProduct->discount > 0)
                                 <div class="product__badge light-pink">-{{ $relatedProduct->discount }}%</div>
@@ -133,7 +160,6 @@
                         </div>
 
                         <div class="product_content">
-                           
                             <a href="#">
                                 <h3 class="product__title">{{ $relatedProduct->product_name }}</h3>
                             </a>
@@ -161,7 +187,6 @@
             </div>
         </section>
 
-
         <section class="newsletter section">
             <div class="newsletter__container container grid">
                 <h3 class="newsletter__title flex">
@@ -178,7 +203,6 @@
                     <button type="submit" class="newletter__btn">Subscribe</button>
                 </form>
             </div>
-
         </section>
     </main>
 @endsection

@@ -19,8 +19,8 @@
 
                 <div class="product__banner">
                     <a href="{{ route('client.detail',$product->id) }}" class="product__imgaes">
-                        <img src="{{ $product['image'] }}" alt=""
-                            class="product__img defaule">
+                        <img src="{{ Storage::url($product['image']) }}" alt=""
+                            class="product__img" onmouseout="imgOut()" onmouseover="imgOver()">
                     </a>
                     <div class="product__badge light-pink">Hot</div>
                 </div>

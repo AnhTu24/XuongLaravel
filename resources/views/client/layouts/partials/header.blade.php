@@ -2,21 +2,56 @@
     <div class="header__container container">
         <div class="header__contact">
             <span>+84 683 313 294</span>
-            <span>Our location</span>
+            <span>Vietnam</span>
         </div>
         <p class="header__alert-news">
         </p>
         @if (Auth::check())
-        <div class="header__top-user">
-            <img src="{{ Auth::user()->image }}" alt="{{ Auth::user()->fullname }}" class="user-image">
-            <span class="username">{{ Auth::user()->username }}</span>
-        </div>
-    @else
-        <a href="{{ route('login') }}" class="header__top-action">
-            Log In / Sign Up
-        </a>
-    @endif
-    
+            <div class="header__top-user" style="position: relative;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span>{{ Auth::user()->fullname }}</span>
+                    <img src="{{ Storage::url(Auth::user()->image) ?? 'default_image_path.jpg' }}"
+                        style="width:35px;height:35px;border-radius: 50%; object-fit: cover;" alt="{{ Auth::user()->username }}"
+                        class="user-image" onclick="toggleDropdown()">
+                </div>
+                <!-- Dropdown container -->
+                <div id="userDropdown" class="dropdown__content" style="display: none; position: absolute; top: 100%;">
+
+                    <a href="{{ route('user.edit', Auth::user()->id) }}" class="header__top-action dropdown__link"
+                        style="white-space: nowrap;">
+                        <i class="fas fa-user-edit"></i> Edit Profile
+                    </a>
+
+                    <a href="{{ route('user.change_password') }}" class="header__top-action dropdown__link"
+                        style="white-space: nowrap;">
+                        <i class="fas fa-lock"></i> Change Password
+                    </a>
+
+                    @if (Auth::user()->role == 1)
+                        <a href="{{ route('admin.dashboard') }}" class="header__top-action dropdown__link"
+                            style="white-space: nowrap;">
+                            <i class="fas fa-tachometer-alt"></i> Admin Action
+                        </a>
+                    @endif
+
+                    <hr>
+
+                    <form id="logout-form" class="dropdown__link" action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="header__top-action dropdown__link">
+                            <i class="fas fa-sign-out-alt"></i> Log out
+                        </button>
+                    </form>
+
+                </div>
+
+            </div>
+        @else
+            <a href="{{ route('login') }}" class="header__top-action">
+                <i class="fas fa-user"></i> Log in
+            </a>
+        @endif
+
     </div>
 </div>
 
@@ -42,7 +77,7 @@
             </li>
 
             <li class="nav__item">
-                <a href="{{ route('client.shop')}}" class="nav__link">Shop</a>
+                <a href="{{ route('client.shop') }}" class="nav__link">Shop</a>
                 <div class="dropdown__content">
                     @foreach ($categories as $category)
                         <a href="{{ route('client.shop', ['category' => $category->id]) }}" class="dropdown__link">
@@ -51,7 +86,7 @@
                     @endforeach
                 </div>
             </li>
-            
+
 
 
 
@@ -82,7 +117,7 @@
             <span class="count">3</span>
         </a>
 
-        <a href="{{ route('cart') }}" class="header__action-btn">
+        <a href="" class="header__action-btn">
             <img src="/client/assets/img/icon-cart.svg" alt="">
             <span class="count">3</span>
         </a>
@@ -93,3 +128,31 @@
     </div>
 
 </nav>
+
+<script>
+    function toggleDropdown() {
+        var dropdown = document.getElementById('userDropdown');
+        if (dropdown.style.display === "none") {
+            dropdown.style.display = "block";
+        } else {
+            dropdown.style.display = "none";
+        }
+    }
+
+    // Optional: Close dropdown if user clicks outside
+    window.onclick = function(event) {
+        if (!event.target.matches('.user-image')) {
+            var dropdown = document.getElementById('userDropdown');
+            if (dropdown && dropdown.style.display === "block") {
+                dropdown.style.display = "none";
+            }
+        }
+    }
+
+    window.onload = function() {
+    var dropdown = document.getElementById('userDropdown');
+    if (dropdown) {
+        dropdown.style.display = "none"; // Đảm bảo dropdown không hiển thị
+    }
+};
+</script>
