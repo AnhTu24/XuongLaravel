@@ -75,16 +75,7 @@
                                             <i class="fas fa-edit"></i> <!-- Icon cho 'Sửa' -->
                                         </a>
                                     
-                                        <form action="{{ route('admin.products.destroy', $product->id) }}" method="POST"
-                                            style="display:inline-block;" onsubmit="return confirm('Are you sure you want to hide ❓');">
-                                            @csrf
-                                            @method('DELETE') <!-- Sử dụng DELETE -->
-                                            <button class="btn btn-danger" type="submit"
-                                                style="border:none; background-color:#ffcccc; padding:7px; border-radius:5px;">
-                                                <i class="fas fa-eye-slash" style="color:brown; font-size:20px;"></i>
-                                                <!-- Icon thùng rác màu đỏ -->
-                                            </button>
-                                        </form>
+                                      
                                         <form action="{{ route('admin.products.forceDestroy', $product->id) }}" method="POST"
                                             style="display:inline-block;" onsubmit="return confirm('Are you sure you want to delete ❓');">
                                             @csrf

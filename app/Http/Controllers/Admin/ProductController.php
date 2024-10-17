@@ -14,9 +14,10 @@ class ProductController extends Controller
 
     public function index()
     {
-        $data = Product::latest('id')->paginate(8);
+        $data = Product::withTrashed()->latest('id')->paginate(8);
         return view(self::PATH_VIEW . __FUNCTION__, compact('data'));
     }
+    
 
     public function create()
     {

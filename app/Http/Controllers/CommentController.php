@@ -28,7 +28,7 @@ class CommentController extends Controller
     public function index(Product $product)
     {
         // Assuming your Product model has a 'comments' relationship
-        $comments = $product->comments()->with('user')->get(); // Eager load the user relationship
+        $comments = $product->comments()->with('user')->get(); 
         return view('admin.products.product_comments', compact('product', 'comments')); // Pass product and comments to the view
     }
 

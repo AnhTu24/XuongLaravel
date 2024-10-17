@@ -127,5 +127,8 @@ class ProductController extends Controller
         'comments'));
     }
 
-    
+    public function aboutus()
+    {
+        return view('client.about-us');
+    }
 }

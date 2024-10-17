@@ -95,7 +95,7 @@
             </li>
 
             <li class="nav__item">
-                <a href="accounts.html" class="nav__link">About us</a>
+                <a href="{{ route('client.about-us') }}" class="nav__link">About us</a>
             </li>
 
         </ul>
@@ -117,10 +117,15 @@
             <span class="count">3</span>
         </a>
 
-        <a href="" class="header__action-btn">
-            <img src="/client/assets/img/icon-cart.svg" alt="">
-            <span class="count">3</span>
+        <?php
+        $cart = session()->get('cart', []);
+        $totalItems = array_sum(array_column($cart, 'quantity'));
+        ?>
+        <a href="{{ route('showCart') }}" class="header__action-btn">
+            <img src="/client/assets/img/icon-cart.svg" alt="Cart Icon">
+            <span class="count">{{ $totalItems }}</span>
         </a>
+        
 
         <div class="header__action-btn nav__toggle" id="nav-toggle">
             <img src="/client/assets/img/menu-burger.svg" alt="">

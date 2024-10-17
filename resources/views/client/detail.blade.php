@@ -66,10 +66,21 @@
                         </ul>
                     </div>
 
-                    <div class="details__action">
-                        <input type="number" name="" id="" class="quantity" value="3">
-                        <a href="#" class="btn btn-sm">Add to Cart</a>
-                    </div>
+                    <form action="{{ route('addToCart', $product->id) }}" method="POST">
+                        @csrf
+                        <div class="details__action">
+                            <input type="number" name="quantity" id="product-quanity" class="quantity" value="1">
+                    
+                            <!-- Thêm trường ẩn để lưu color -->
+                            <input type="hidden" name="color" value="{{ $product->color }}">
+                    
+                            <!-- Thêm trường ẩn để lưu size -->
+                            <input type="hidden" name="size" value="{{ $product->size }}">
+                    
+                            <button type="submit" class="btn btn-sm">Add to Cart</button>
+                        </div>
+                    </form>
+                    
                 </div>
             </div>
 

@@ -4,6 +4,8 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -21,6 +23,7 @@ use Illuminate\Support\Facades\Auth;
 
 Route::get('/', [ProductController::class, 'index'])->name('client.index');
 Route::get('shop', [ProductController::class, 'shop'])->name('client.shop');
+Route::get('about-us', [ProductController::class, 'aboutus'])->name('client.about-us');
 Route::get('detail/{id}', [ProductController::class, 'detail'])->name('client.detail');
 Route::get('/detail/{id}/info', [ProductController::class, 'getAdditionalInfo']);
 Route::get('/detail/{id}/comments', [ProductController::class, 'getComments']);
@@ -31,6 +34,18 @@ Route::post('/user/edit', [UserController::class, 'edit'])->name('user.edit');
 Route::get('/user/change-password', [UserController::class, 'showChangePasswordForm'])->name('user.change_password.form');
 Route::post('/user/change-password', [UserController::class, 'changePassword'])->name('user.change_password');
 Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
+
+// Cart
+Route::post('/add-to-cart/{id}', [CartController::class, 'addToCart'])->name('addToCart');
+Route::get('/cart', [CartController::class, 'showCart'])->name('showCart');
+Route::post('/cart/update/{id}', [CartController::class, 'updateCart'])->name('updateCart');
+Route::post('/cart/remove/{id}', [CartController::class, 'removeCart'])->name('removeFromCart');
+
+Route::get('/check-out', [CheckoutController::class, 'index'])->name('checkout');
+Route::post('/checkout', [CheckoutController::class, 'processCheckout'])->name('processCheckout');
+
+
+
 
 
 
@@ -52,6 +67,8 @@ Route::prefix('admin')->name('admin.')->middleware('admin')->group(function () {
     Route::resource('products', AdminProductController::class);
     Route::delete('products/{product}/forceDestroy', [AdminProductController::class, 'forceDestroy'])
         ->name('products.forceDestroy');
+        Route::patch('products/restore/{id}', [AdminProductController::class, 'restore'])
+        ->name('products.restore');
 
     Route::resource('categories', AdminCategoryController::class);
     Route::delete('categories/{category}/forceDestroy', [AdminCategoryController::class, 'forceDestroy'])
